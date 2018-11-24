@@ -13,10 +13,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("Notebook/My First Note");
+    private ListenerRegistration noteLisener;
 
 
     @Override
@@ -42,6 +48,29 @@ public class MainActivity extends AppCompatActivity {
         textViewData = findViewById(R.id.text_view_data);
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null ){
+                    Toast.makeText(MainActivity.this, "Error While Loading", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, e.toString());
+                    return;
+                }
+                if (documentSnapshot.exists()) {
+                    String title = documentSnapshot.getString(KEY_TITLE);
+                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+
+                    //Map<String, Object> note = documentSnapshot.getData();
+
+                    textViewData.setText("Title: " + title + "\n" + "Description: " + description);
+                }
+            }
+        });
     }
 
     public void saveNote(View view){
@@ -67,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
     public void loadNote(View view){
         noteRef.get()
