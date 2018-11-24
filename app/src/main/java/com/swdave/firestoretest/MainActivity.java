@@ -98,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void updateDescription(View view){
+    public void updateDescription(View view) {
         String description = editTextDescription.getText().toString();
-
+        
         Map<String, Object> note = new HashMap<>();
-        note.put(KEY_DESCRIPTION, description); 
+        note.put(KEY_DESCRIPTION, description);
 
         noteRef.set(note, SetOptions.merge());
     }
