@@ -22,7 +22,34 @@
         android:layout_height="wrap_content"
         android:hint="Description"
         android:inputType="text"/>
-    
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="addNote"
+        android:text="Add"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Load"
+        android:onClick="loadNotes"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_view_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"/>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <!-- Code commented out below is for testing purposes only
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,8 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete note"
-        android:onClick="deleteNote"
-        />
+        android:onClick="deleteNote" />
 
     <TextView
         android:id="@+id/text_view_data"
@@ -60,5 +86,6 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"/>
 
+        End -->
 
 </LinearLayout>
