@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -62,12 +63,13 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if (documentSnapshot.exists()) {
-                    String title = documentSnapshot.getString(KEY_TITLE);
-                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                    Note note = documentSnapshot.toObject(Note.class);
 
-                    //Map<String, Object> note = documentSnapshot.getData();
-
+                    String title = note.getTitle();
+                    String description = note.getDescription();
                     textViewData.setText("Title: " + title + "\n" + "Description: " + description);
+                } else {
+                    textViewData.setText("");
                 }
             }
         });
@@ -77,9 +79,7 @@ public class MainActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
 
-        Map<String, Object> note = new HashMap<>();
-        note.put(KEY_TITLE, title);
-        note.put(KEY_DESCRIPTION, description);
+        Note note = new Note(title, description);
 
         noteRef.set(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -110,6 +110,20 @@ public class MainActivity extends AppCompatActivity {
         noteRef.update(KEY_DESCRIPTION, description);
     }
 
+    public void deleteDescription(View view){
+
+        //Map<String, Object> note = new HashMap<>();
+        //note.put(KEY_DESCRIPTION,FieldValue.delete());
+        //noteRef.update(note);
+
+        noteRef.update(KEY_DESCRIPTION, FieldValue.delete());
+    }
+
+    public void deleteNote(View view){
+
+        noteRef.delete();
+    }
+
 
     public void loadNote(View view) {
         noteRef.get()
@@ -117,11 +131,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            String title = documentSnapshot.getString(KEY_TITLE);
-                            String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                            Note note = documentSnapshot.toObject(Note.class);
 
-                            //Map<String, Object> note = documentSnapshot.getData();
-
+                            String title = note.getTitle();
+                            String description = note.getDescription();
                             textViewData.setText("Title: " + title + "\n" + "Description: " + description);
                         } else {
                             Toast.makeText(MainActivity.this, "Document Does not exist", Toast.LENGTH_SHORT).show();
